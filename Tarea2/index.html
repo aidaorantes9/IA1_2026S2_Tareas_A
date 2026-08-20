@@ -1,0 +1,59 @@
+<!-- ================================
+    Frontend
+    Formulario simple que consulta la API de Flask
+     ================================ -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario RPG</title>
+</head>
+<body>
+    <h1>Inventario del Aventurero</h1>
+
+    <!-- formulario para escribir el item que quiero buscar -->
+    <input type="text" id="itemInput" placeholder="Ej: espada">
+    <button onclick="buscarInventario()">Buscar</button>
+
+    <p id="mensajeError" style="color:red;"></p>
+
+    <h3>Total de items: <span id="total"></span></h3>
+    <h3>Inventario invertido:</h3>
+    <p id="invertido"></p>
+
+    <h3>Inventario sin duplicados:</h3>
+    <p id="unico"></p>
+
+    <h3>Inventario con duplicados (ordenado):</h3>
+    <p id="ordenado"></p>
+
+    <script>
+        // funcion que se ejecuta al hacer click en el boton Buscar
+        async function buscarInventario() {
+            const item = document.getElementById("itemInput").value;
+            document.getElementById("mensajeError").innerText = "";
+
+            try {
+                // le pego a la API de Flask mandando el item como query param
+                const respuesta = await fetch(`http://127.0.0.1:5000/inventario?item=${item}`);
+                const datos = await respuesta.json();
+
+                if (!respuesta.ok) {
+                    // si el backend mando un error (400 o 404) lo muestro
+                    document.getElementById("mensajeError").innerText = datos.error;
+                    return;
+                }
+
+                // pongo los datos que llegaron del JSON en el HTML
+                document.getElementById("total").innerText = datos.total_items;
+                document.getElementById("invertido").innerText = datos.inventario_invertido.join(", ");
+                document.getElementById("unico").innerText = datos.inventario_unico.join(", ");
+                document.getElementById("ordenado").innerText = datos.inventario_ordenado.join(", ");
+
+            } catch (error) {
+                document.getElementById("mensajeError").innerText = "No se pudo conectar con el backend";
+            }
+        }
+    </script>
+</body>
+</html>
