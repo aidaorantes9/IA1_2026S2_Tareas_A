@@ -46,7 +46,10 @@ Live Server. Escribir un item que exista (ej: `espada`, `escudo`, `pocion`,
 ## Capturas
 
 ### Frontend (navegador) mostrando el resultado de una consulta exitosa
-![Resultado en navegador](/Tarea2/imagenes/navegador.png)
+![Resultado en navegador](imagenes/navegador.png)
 
 ### Consola del backend mostrando la impresión recursiva de Prolog
-![Consola del backend](/Tarea2/imagenes/terminal.png)
+![Consola del backend](imagenes/terminal.png)
+
+### Petición HTTP usada (Network tab del navegador)
+![Petición usada](imagenes/peticion.png)
