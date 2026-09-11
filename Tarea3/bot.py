@@ -2,7 +2,13 @@ import os
 import logging
 
 from dotenv import load_dotenv
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
+from telegram.ext import (
+    ApplicationBuilder,
+    CallbackQueryHandler,
+    CommandHandler,
+    MessageHandler,
+    filters,
+)
 
 from commands import (
     hola,
@@ -16,8 +22,8 @@ from commands import (
     convertir,
     comando_desconocido,
 )
+from menu import menu, menu_callback
 
-# cargamos las variables de entorno del archivo .env
 load_dotenv()
 
 logging.basicConfig(
@@ -39,9 +45,11 @@ def main():
     app.add_handler(CommandHandler("contacto", contacto))
     app.add_handler(CommandHandler("integrantes", integrantes))
 
-    # comandos de Persona 2, 3 y 4, pendientes de implementar
     app.add_handler(CommandHandler("hora", hora))
     app.add_handler(CommandHandler("ayuda", ayuda))
+    app.add_handler(CommandHandler("menu", menu))
+    app.add_handler(CallbackQueryHandler(menu_callback))
+
     app.add_handler(CommandHandler("calcular", calcular_cmd))
     app.add_handler(CommandHandler("tabla", tabla))
     app.add_handler(CommandHandler("convertir", convertir))
