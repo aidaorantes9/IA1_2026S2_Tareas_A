@@ -1,5 +1,11 @@
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
 from telegram import Update
 from telegram.ext import ContextTypes
+
+# Guatemala no usa horario de verano, por lo que la zona horaria es fija
+ZONA_HORARIA_GT = ZoneInfo("America/Guatemala")
 
 # =========================================================
 # PERSONA 1: comandos basicos de informacion
@@ -45,14 +51,40 @@ async def integrantes(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # PERSONA 2: comandos dinamicos y ayuda
 # =========================================================
 
+# Comando /hora
+# Muestra la fecha y hora actual de forma dinamica (zona horaria de Guatemala)
 async def hora(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # TODO Persona 2: mostrar la fecha y hora actual
-    pass
+    ahora = datetime.now(ZONA_HORARIA_GT)
+    mensaje = (
+        "Fecha y hora actual en Guatemala:\n"
+        + ahora.strftime("%d/%m/%Y %H:%M:%S")
+    )
+    await update.effective_message.reply_text(mensaje)
 
 
+# Lista central de comandos usada por /ayuda y como referencia para /menu
+LISTA_COMANDOS = [
+    ("/hola", "Saluda al usuario utilizando su nombre de Telegram."),
+    ("/hora", "Muestra la fecha y hora actual de Guatemala."),
+    ("/contacto", "Muestra la informacion de contacto del grupo."),
+    ("/integrantes", "Muestra el nombre y carnet de los integrantes del grupo."),
+    ("/ayuda", "Muestra esta lista de comandos disponibles."),
+    ("/menu", "Muestra un menu interactivo con botones."),
+    ("/calcular <numero1> <operador> <numero2>", "Suma, resta, multiplica o divide dos numeros."),
+    ("/tabla <numero>", "Muestra la tabla de multiplicar del 1 al 10."),
+    ("/convertir <cantidad> <unidad_origen> <unidad_destino>", "Convierte entre cm, m, km, mi y ft."),
+    ("/aleatorio <min> <max>", "Genera un numero entero aleatorio dentro del rango indicado."),
+]
+
+
+# Comando /ayuda
+# Muestra la lista de comandos disponibles y una breve descripcion de cada uno
 async def ayuda(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # TODO Persona 2: mostrar la lista de comandos disponibles
-    pass
+    lineas = ["Comandos disponibles:"]
+    for comando, descripcion in LISTA_COMANDOS:
+        lineas.append(comando + " - " + descripcion)
+    mensaje = "\n".join(lineas)
+    await update.effective_message.reply_text(mensaje)
 
 
 # =========================================================
