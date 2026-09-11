@@ -2,10 +2,12 @@ import os
 import logging
 
 from dotenv import load_dotenv
+from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
     CallbackQueryHandler,
     CommandHandler,
+    ContextTypes,
     MessageHandler,
     filters,
 )
@@ -34,6 +36,18 @@ logging.basicConfig(
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 
 
+# si cualquier handler lanza una excepcion no
+# se registra y avisa al usuario en vez de dejar que el
+# bot se detenga
+async def manejador_errores(update: object, context: ContextTypes.DEFAULT_TYPE):
+    logging.error("Excepcion no manejada: %s", context.error, exc_info=context.error)
+
+    if isinstance(update, Update) and update.effective_message:
+        await update.effective_message.reply_text(
+            "Ocurrio un error inesperado al procesar tu solicitud. Intenta nuevamente."
+        )
+
+
 def main():
     if not TOKEN:
         raise RuntimeError("No se encontro TELEGRAM_TOKEN. Revisa tu archivo .env")
@@ -57,6 +71,9 @@ def main():
 
     # manejo de comandos que no existen, debe ir al final
     app.add_handler(MessageHandler(filters.COMMAND, comando_desconocido))
+
+    # manejo de errores general
+    app.add_error_handler(manejador_errores)
 
     logging.info("Bot iniciado. Presiona Ctrl+C para detener.")
     app.run_polling()

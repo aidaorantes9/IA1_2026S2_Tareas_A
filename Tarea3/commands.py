@@ -1,3 +1,4 @@
+import random
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -93,14 +94,101 @@ async def ayuda(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # PERSONA 3: calculadora, aleatorio y validaciones
 # =========================================================
 
+OPERADORES_VALIDOS = {"+", "-", "*", "/"}
+
+def _formatear_numero(valor: float) -> str:
+    if valor == int(valor):
+        return str(int(valor))
+    return f"{valor:.4f}".rstrip("0").rstrip(".")
+
+
+# Comando /calcular <numero1> <operador> <numero2>
+# Realiza suma, resta, multiplicacion y division, validando cada parametro
 async def calcular_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # TODO Persona 3: leer numero1, operador, numero2 y validar
-    pass
+    args = context.args
+    uso = (
+        "Uso incorrecto del comando.\n"
+        "Formato correcto: /calcular <numero1> <operador> <numero2>\n"
+        "Operadores validos: +  -  *  /\n"
+        "Ejemplo: /calcular 5 + 3"
+    )
+
+    # parametros faltantes o de mas
+    if len(args) != 3:
+        await update.effective_message.reply_text(uso)
+        return
+
+    texto_num1, operador, texto_num2 = args
+
+    if operador not in OPERADORES_VALIDOS:
+        await update.effective_message.reply_text(
+            f"Operador invalido: '{operador}'.\nOperadores validos: +  -  *  /"
+        )
+        return
+
+    try:
+        numero1 = float(texto_num1)
+        numero2 = float(texto_num2)
+    except ValueError:
+        await update.effective_message.reply_text(
+            f"Los valores '{texto_num1}' y/o '{texto_num2}' no son numeros validos.\n{uso}"
+        )
+        return
+
+    if operador == "+":
+        resultado = numero1 + numero2
+    elif operador == "-":
+        resultado = numero1 - numero2
+    elif operador == "*":
+        resultado = numero1 * numero2
+    else:  # operador == "/"
+        if numero2 == 0:
+            await update.effective_message.reply_text("No se puede dividir entre cero.")
+            return
+        resultado = numero1 / numero2
+
+    mensaje = (
+        f"{_formatear_numero(numero1)} {operador} {_formatear_numero(numero2)} "
+        f"= {_formatear_numero(resultado)}"
+    )
+    await update.effective_message.reply_text(mensaje)
 
 
+# Comando /aleatorio <min> <max>
+# Genera un numero entero aleatorio dentro del rango indicado
 async def aleatorio(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # TODO Persona 3: generar numero aleatorio entre min y max
-    pass
+    args = context.args
+    uso = (
+        "Uso incorrecto del comando.\n"
+        "Formato correcto: /aleatorio <min> <max>\n"
+        "Ejemplo: /aleatorio 1 100"
+    )
+
+    if len(args) != 2:
+        await update.effective_message.reply_text(uso)
+        return
+
+    texto_min, texto_max = args
+
+    try:
+        minimo = int(texto_min)
+        maximo = int(texto_max)
+    except ValueError:
+        await update.effective_message.reply_text(
+            f"Los valores '{texto_min}' y '{texto_max}' deben ser numeros enteros.\n{uso}"
+        )
+        return
+
+    if minimo > maximo:
+        await update.effective_message.reply_text(
+            f"El valor minimo ({minimo}) no puede ser mayor que el maximo ({maximo})."
+        )
+        return
+
+    numero = random.randint(minimo, maximo)
+    await update.effective_message.reply_text(
+        f"Numero aleatorio entre {minimo} y {maximo}: {numero}"
+    )
 
 
 # =========================================================
