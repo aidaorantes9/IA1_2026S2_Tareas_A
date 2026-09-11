@@ -18,8 +18,10 @@ async def hola(update: Update, context: ContextTypes.DEFAULT_TYPE):
     nombre = update.effective_user.first_name or update.effective_user.username or "usuario"
 
     # le enviamos el saludo de vuelta
+    # usamos effective_message para que este mismo comando tambien
+    # pueda ejecutarse desde un boton del /menu (Persona 2)
     mensaje = "Hola, " + nombre + ". Bienvenido al bot del curso."
-    await update.message.reply_text(mensaje)
+    await update.effective_message.reply_text(mensaje)
 
 
 # Comando /contacto
@@ -30,7 +32,7 @@ async def contacto(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Somos el grupo numero 5 del laboratorio de Inteligencia Artificial 1\n"
         "GitHub: https://github.com/aidaorantes9/IA1_2026S2_Tareas_A"
     )
-    await update.message.reply_text(mensaje)
+    await update.effective_message.reply_text(mensaje)
 
 
 # Comando /integrantes
@@ -44,7 +46,7 @@ async def integrantes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "- Aida Alejandra Mansilla Orantes - Carnet 202100239\n"
         "- Andrea Alejandra Perez Sandoval - Carnet 202201136"
     )
-    await update.message.reply_text(lista)
+    await update.effective_message.reply_text(lista)
 
 
 # =========================================================
