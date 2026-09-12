@@ -90,6 +90,11 @@ Demostración de cada comando funcionando correctamente.
 ![Persona 3](evidencia/persona3.jpeg)
 ![Persona 4](evidencia/persona4.png)
 
+Evidencia del despliegue: bot corriendo en Render y monitor de UptimeRobot manteniéndolo activo.
+
+![Bot en Render](evidencia/render.png)
+![Monitor UptimeRobot](evidencia/uptimerobot.png)
+
 ## Grupo de Telegram para pruebas
 
 Link del grupo/canal: https://t.me/+nDHQyqztSSw5ZWIx
