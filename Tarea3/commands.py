@@ -195,14 +195,86 @@ async def aleatorio(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # PERSONA 4: tabla de multiplicar y conversor de unidades
 # =========================================================
 
+# Comando /tabla <numero>
+# Muestra la tabla de multiplicar del numero ingresado, del 1 al 10
 async def tabla(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # TODO Persona 4: mostrar tabla de multiplicar del 1 al 10
-    pass
+    args = context.args
+    uso = (
+        "Uso incorrecto del comando.\n"
+        "Formato correcto: /tabla <numero>\n"
+        "Ejemplo: /tabla 7"
+    )
+
+    if len(args) != 1:
+        await update.effective_message.reply_text(uso)
+        return
+
+    try:
+        numero = int(args[0])
+    except ValueError:
+        await update.effective_message.reply_text(
+            f"El valor '{args[0]}' no es un numero entero valido.\n{uso}"
+        )
+        return
+
+    lineas = [f"Tabla de multiplicar del {numero}:"]
+    for i in range(1, 11):
+        lineas.append(f"{numero} x {i} = {numero * i}")
+
+    await update.effective_message.reply_text("\n".join(lineas))
 
 
+# Factores de conversion de cada unidad a metros
+UNIDADES_LONGITUD = {
+    "cm": 0.01,
+    "m": 1,
+    "km": 1000,
+    "mi": 1609.344,
+    "ft": 0.3048,
+}
+
+
+# Comando /convertir <cantidad> <unidad_origen> <unidad_destino>
+# Convierte una cantidad entre unidades de longitud (cm, m, km, mi, ft)
 async def convertir(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # TODO Persona 4: convertir entre cm, m, km, mi, ft
-    pass
+    args = context.args
+    uso = (
+        "Uso incorrecto del comando.\n"
+        "Formato correcto: /convertir <cantidad> <unidad_origen> <unidad_destino>\n"
+        "Unidades soportadas: cm, m, km, mi, ft\n"
+        "Ejemplo: /convertir 10 km mi"
+    )
+
+    if len(args) != 3:
+        await update.effective_message.reply_text(uso)
+        return
+
+    texto_cantidad, unidad_origen, unidad_destino = args
+    unidad_origen = unidad_origen.lower()
+    unidad_destino = unidad_destino.lower()
+
+    try:
+        cantidad = float(texto_cantidad)
+    except ValueError:
+        await update.effective_message.reply_text(
+            f"El valor '{texto_cantidad}' no es un numero valido.\n{uso}"
+        )
+        return
+
+    if unidad_origen not in UNIDADES_LONGITUD or unidad_destino not in UNIDADES_LONGITUD:
+        await update.effective_message.reply_text(
+            "Unidad invalida. Unidades soportadas: cm, m, km, mi, ft\n" + uso
+        )
+        return
+
+    metros = cantidad * UNIDADES_LONGITUD[unidad_origen]
+    resultado = metros / UNIDADES_LONGITUD[unidad_destino]
+
+    mensaje = (
+        f"{_formatear_numero(cantidad)} {unidad_origen} "
+        f"= {_formatear_numero(resultado)} {unidad_destino}"
+    )
+    await update.effective_message.reply_text(mensaje)
 
 
 # =========================================================
