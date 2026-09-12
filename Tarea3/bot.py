@@ -25,6 +25,7 @@ from commands import (
     comando_desconocido,
 )
 from menu import menu, menu_callback
+from keep_alive import keep_alive
 
 load_dotenv()
 
@@ -74,6 +75,12 @@ def main():
 
     # manejo de errores general
     app.add_error_handler(manejador_errores)
+
+    # en Render se define la variable PORT automaticamente; si existe,
+    # levantamos el servidor de keep-alive para que el servicio no se
+    # duerma por inactividad. En local (sin PORT) no se levanta.
+    if os.getenv("PORT"):
+        keep_alive()
 
     logging.info("Bot iniciado. Presiona Ctrl+C para detener.")
     app.run_polling()
