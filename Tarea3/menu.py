@@ -1,5 +1,4 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from telegram.ext import ContextTypes
+from telegram_api import InlineKeyboardButton, InlineKeyboardMarkup, Update, ContextTypes
 
 from commands import hola, contacto, integrantes, hora, ayuda
 

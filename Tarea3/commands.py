@@ -2,8 +2,7 @@ import random
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from telegram import Update
-from telegram.ext import ContextTypes
+from telegram_api import Update, ContextTypes
 
 # Guatemala no usa horario de verano, por lo que la zona horaria es fija
 ZONA_HORARIA_GT = ZoneInfo("America/Guatemala")
